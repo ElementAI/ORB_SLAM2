@@ -18,7 +18,6 @@ sudo apt-get install -y \
     libdc1394-22-dev \
     libraw1394-dev
 
-pwd
 # Pangolin
 git clone https://github.com/stevenlovegrove/Pangolin.git && \
 cd Pangolin && \
@@ -28,10 +27,8 @@ cmake .. && \
 cmake --build . && \ 
 cd ../..
 
-pwd
 # Eigen
 sudo -H git clone https://github.com/eigenteam/eigen-git-mirror.git /usr/local/include/eigen
 
-pwd
-chmod +x build.sh
-./build.sh
+# chmod +x build.sh
+# ./build.sh
