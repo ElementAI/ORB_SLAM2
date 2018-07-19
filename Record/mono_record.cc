@@ -36,9 +36,9 @@ void LoadImages(const string &strFile, vector<string> &vstrImageFilenames,
 
 int main(int argc, char **argv)
 {
-    if(argc != 4)
+    if(argc < 4 || argc>8)
     {
-        cerr << endl << "Usage: ./mono_tum path_to_vocabulary path_to_settings path_to_sequence" << endl;
+        cerr << endl << "Usage: ./mono_record path_to_vocabulary path_to_settings path_to_sequence n_reset=1 reset_rate=1 record_map=1 save_dir=path_to_sequence/trajectories" << endl;
         return 1;
     }
 
@@ -61,16 +61,21 @@ int main(int argc, char **argv)
     cout << "Start processing sequence ..." << endl;
     cout << "Images in the sequence: " << nImages << endl << endl;
 
-    //mkdir(string(argv[3])+"/trajectories",S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     // Main loop
     cv::Mat im;
-    for(int mmi=0; mmi<1000; mmi++){
+    int n_reset=argc>4?stoi(argv[4]):1;
+    int reset_rate=argc>5?stoi(argv[5]):1;
+    bool save_map=bool(argc>6?stoi(argv[6]):1);
+    string save_dir=argc>7?string(argv[7]):string(argv[3])+"/trajectories";
+    mkdir(save_dir.c_str(),S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    for(int mmi=0; mmi<n_reset*reset_rate; mmi++){
         cout << "Trajectory " <<mmi<< endl;
         //string fname=string(argv[3])+"/trajectories/traj_"+to_string(mmi)+".txt";
         //cout << fname << endl;
-        ofstream traj_file(string(argv[3])+"/trajectories/traj_"+to_string(mmi)+".txt");
-        ofstream map_file(string(argv[3])+"/trajectories/map_"+to_string(mmi)+".txt");
-        if(mmi%10==0){
+        ofstream traj_file(save_dir+"/traj_"+to_string(mmi)+".txt");
+	ofstream map_file;
+        if(save_map)map_file.open(save_dir+"/map_"+to_string(mmi)+".txt");
+        if(mmi%reset_rate==0){
             cout << "Reset" << endl;
             SLAM.Reset();
         }
@@ -99,7 +104,7 @@ int main(int argc, char **argv)
             for(int pi=0; pi<SLAM.GetTrackedMapPoints().size(); pi++)
             {
                 //cout<<SLAM.GetTrackedMapPoints()[pi]<<endl;
-                if(SLAM.GetTrackedMapPoints()[pi]!=0){
+                if(save_map&&SLAM.GetTrackedMapPoints()[pi]!=0){
                     auto x=SLAM.GetTrackedMapPoints()[pi]->GetWorldPos();
                     map_file << ni <<", "<<format(x.reshape (x.rows * x.cols), cv::Formatter::FMT_CSV)<<endl;
                 }
@@ -148,9 +153,12 @@ int main(int argc, char **argv)
         traj_file.close();
 
     }
+    cout << "-------" << endl << endl;
+    cout << "Done, cleaning up" << endl << endl;
 
     // Stop all threads
     SLAM.Shutdown();
+    cout << "-------" << endl << endl;
 
     // Tracking time statistics
     sort(vTimesTrack.begin(),vTimesTrack.end());
@@ -164,7 +172,7 @@ int main(int argc, char **argv)
     cout << "mean tracking time: " << totaltime/nImages << endl;
 
     // Save camera trajectory
-    SLAM.SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
+    //SLAM.SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
 
     return 0;
 }

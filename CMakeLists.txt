@@ -106,11 +106,7 @@ add_executable(mono_euroc
 Examples/Monocular/mono_euroc.cc)
 target_link_libraries(mono_euroc ${PROJECT_NAME})
 
-add_executable(mono_trajectories
-Record/mono_trajectories.cc)
-target_link_libraries(mono_trajectories ${PROJECT_NAME})
-
-add_executable(mono_points
-Record/mono_points.cc)
-target_link_libraries(mono_points ${PROJECT_NAME})
+add_executable(mono_record
+Record/mono_record.cc)
+target_link_libraries(mono_record ${PROJECT_NAME})
 

@@ -16,7 +16,13 @@ sudo apt-get install -y \
     libopencv-dev \
     libopenexr-dev \
     libdc1394-22-dev \
-    libraw1394-dev
+    libraw1394-dev \
+    libboost-dev \
+    libsuitesparse-dev \
+    libboost-dev \
+    libeigen3-dev \
+    qt5-qmake \
+    libboost-dev
 
 # Pangolin
 git clone https://github.com/stevenlovegrove/Pangolin.git && \
@@ -28,7 +34,7 @@ cmake --build . && \
 cd ../..
 
 # Eigen
-sudo -H git clone https://github.com/eigenteam/eigen-git-mirror.git /usr/local/include/eigen
+#sudo -H git clone https://github.com/eigenteam/eigen-git-mirror.git /usr/local/include/eigen
 
 # chmod +x build.sh
 # ./build.sh

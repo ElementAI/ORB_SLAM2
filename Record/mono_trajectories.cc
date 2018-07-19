@@ -36,9 +36,9 @@ void LoadImages(const string &strFile, vector<string> &vstrImageFilenames,
 
 int main(int argc, char **argv)
 {
-    if(argc != 4)
+    if(argc < 4 || argc>6)
     {
-        cerr << endl << "Usage: ./mono_tum path_to_vocabulary path_to_settings path_to_sequence" << endl;
+        cerr << endl << "Usage: ./mono_tum path_to_vocabulary path_to_settings path_to_sequence n_reset reset_rate" << endl;
         return 1;
     }
 
@@ -61,15 +61,17 @@ int main(int argc, char **argv)
     cout << "Start processing sequence ..." << endl;
     cout << "Images in the sequence: " << nImages << endl << endl;
 
-    //mkdir(string(argv[3])+"/trajectories",S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+    mkdir((string(argv[3])+"/trajectories").c_str(),S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     // Main loop
     cv::Mat im;
-    for(int mmi=0; mmi<1000; mmi++){
+    int n_reset=argc>4?stoi(argv[4]):1;
+    int reset_rate=argc>5?stoi(argv[5]):1;
+    for(int mmi=0; mmi<n_reset*reset_rate; mmi++){
         cout << "Trajectory " <<mmi<< endl;
         string fname=string(argv[3])+"/trajectories/traj_"+to_string(mmi)+".txt";
         cout << fname << endl;
         ofstream file(fname);
-        if(mmi%10==0){
+        if(mmi%reset_rate==0){
             cout << "Reset" << endl;
             SLAM.Reset();
         }
