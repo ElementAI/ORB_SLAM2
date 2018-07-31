@@ -100,6 +100,10 @@ int main(int argc, char **argv)
 
             // Pass the image to the SLAM system
             cv::Mat x=SLAM.TrackMonocular(im,tframe);
+            cout<<SLAM.mpTracker->mLastFrame.mRcw << endl << endl;
+            cout<<SLAM.mpTracker->mLastFrame.mtcw << endl << endl;
+            cout<<SLAM.mpTracker->mLastFrame.mRwc << endl << endl;
+            cout<<SLAM.mpTracker->mLastFrame.mOw << endl << endl << endl << endl << endl << endl;
             //map_file << ni << endl;
             for(int pi=0; pi<SLAM.GetTrackedMapPoints().size(); pi++)
             {
@@ -117,7 +121,7 @@ int main(int argc, char **argv)
             //cout<<endl;
             //cout << x << endl;
             //cout<<format(x.reshape (x.rows * x.cols), cv::Formatter::FMT_CSV)<< endl;
-            traj_file << ni<<", "<<format(x.reshape (x.rows * x.cols), cv::Formatter::FMT_CSV) << endl;
+            if(x.cols>0)traj_file << ni<<", "<<format(x.reshape (x.rows * x.cols), cv::Formatter::FMT_CSV) << endl;
             /*for(int i = 0; i < x.rows; i++)
             {
                 const double* Mi = x.ptr<double>(i);
@@ -172,7 +176,7 @@ int main(int argc, char **argv)
     cout << "mean tracking time: " << totaltime/nImages << endl;
 
     // Save camera trajectory
-    //SLAM.SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
+    SLAM.SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
 
     return 0;
 }
