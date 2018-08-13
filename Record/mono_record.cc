@@ -110,7 +110,7 @@ int main(int argc, char **argv)
                 //cout<<SLAM.GetTrackedMapPoints()[pi]<<endl;
                 if(save_map&&SLAM.GetTrackedMapPoints()[pi]!=0){
                     auto x=SLAM.GetTrackedMapPoints()[pi]->GetWorldPos();
-    #ifdef HAS_OPENCV3
+    #if CV_MAJOR_VERSION==3
                     map_file << ni <<", "<<format(x.reshape (x.rows * x.cols), cv::Formatter::FMT_CSV)<<endl;
     #else
                     map_file << ni <<", "<<format(x.reshape (x.rows * x.cols), "csv")<<endl;
@@ -125,7 +125,7 @@ int main(int argc, char **argv)
             //cout<<endl;
             //cout << x << endl;
             //cout<<format(x.reshape (x.rows * x.cols), cv::Formatter::FMT_CSV)<< endl;
-    #ifdef HAS_OPENCV3
+    #if CV_MAJOR_VERSION==3
             if(x.cols>0)traj_file << ni<<", "<<format(x.reshape (x.rows * x.cols), cv::Formatter::FMT_CSV) << endl;
     #else
             if(x.cols>0)traj_file << ni<<", "<<format(x.reshape (x.rows * x.cols), "csv") << endl;
